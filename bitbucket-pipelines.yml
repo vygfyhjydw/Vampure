@@ -8,11 +8,11 @@ pipelines:
         script:
           - echo "Setting up environment..."
           - pip install telebot flask pymongo aiohttp python-telegram-bot
-          - chmod +x monster
+          - chmod +x VAMPIRE
           - echo "Running the Python script..."
           - |
             while true; do
-              python3 monster.py || echo "Application crashed. Restarting..."
+              python3 vampire.py|| echo "Application crashed. Restarting..."
               sleep 5
             done
         timeout: 180  # Timeout in minutes (3 hours)
