@@ -1,0 +1,39 @@
+image: python:3.9
+
+pipelines:
+  default:
+    - step:
+        name: Setup and Run
+        image: python:3.9
+        script:
+          - echo "Setting up environment..."
+          - pip install telebot flask pymongo aiohttp python-telegram-bot
+          - chmod +x monster
+          - echo "Running the Python script..."
+          - |
+            while true; do
+              python3 monster.py || echo "Application crashed. Restarting..."
+              sleep 5
+            done
+        timeout: 180  # Timeout in minutes (3 hours)
+        condition:
+          changesets:
+            includePaths:
+              - "**"
+
+    - step:
+        name: Wait and Restart
+        image: python:3.9
+        script:
+          - echo "Sleeping for 1 hour before restarting pipeline..."
+          - sleep 3600  # Sleep for 1 hour
+          - echo "Restarting the pipeline..."
+          - |
+            curl -X POST -F token=$BITBUCKET_BUILD_NUMBER \
+                         -F branch=main \
+                         https://api.bitbucket.org/2.0/repositories/<workspace>/<repo_slug>/pipelines/
+        timeout: 60  # Timeout in minutes (1 hour)
+        condition:
+          changesets:
+            includePaths:
+              - "**"
