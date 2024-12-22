@@ -28,4 +28,4 @@ jobs:
       - name: Run the script
         run: |
           ls
-          python3 new.py
+          python3 vampire.py
